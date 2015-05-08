@@ -112,7 +112,9 @@ public class MainPanel extends JTabbedPane implements MiniCalendarHostIface
 	public MainPanel()
 	{
 		if (instance != null)
+		{
 			throw new RuntimeException("Trying to create more than one calendar panel!");
+		}
 
 		instance = this; // Variable for creating new tabs in addTopLevelTab
 
@@ -121,9 +123,6 @@ public class MainPanel extends JTabbedPane implements MiniCalendarHostIface
 	@Override
 	public void paint(Graphics g)
 	{
-
-		// call finish init always, it has a if to prevent multiple calls. see
-		// below comment on why
 		if (mTabbedPane != this)
 		{
 			((JFrame) SwingUtilities.getWindowAncestor(this)).addWindowListener(new WindowListener() {

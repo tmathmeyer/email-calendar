@@ -34,7 +34,7 @@ public class Calendar extends JFrame implements WindowListener
 
 	public Calendar()
 	{
-		JanewayTabModel master = new JanewayTabModel("Calender", new ImageIcon(), toolbar, mainPanel);
+		JanewayTabModel master = new JanewayTabModel("Calendar", new ImageIcon(), toolbar, mainPanel);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setPreferredSize(new Dimension(800, 600));
