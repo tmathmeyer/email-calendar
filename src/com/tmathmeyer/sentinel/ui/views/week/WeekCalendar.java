@@ -36,7 +36,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import com.tmathmeyer.sentinel.AbstractCalendar;
-import com.tmathmeyer.sentinel.models.client.local.EventClient;
+import com.tmathmeyer.sentinel.models.client.net.EventClient;
 import com.tmathmeyer.sentinel.models.client.net.CommitmentClient;
 import com.tmathmeyer.sentinel.models.data.Displayable;
 import com.tmathmeyer.sentinel.models.data.Event;
@@ -318,7 +318,7 @@ public class WeekCalendar extends AbstractCalendar
 	private List<Displayable> getVisibleDisplayables()
 	{
 		List<Displayable> visibleDisplayables = new ArrayList<Displayable>();
-		visibleDisplayables.addAll(EventClient.getInstance().getWithinRange(weekStartTime, weekEndTime));
+		visibleDisplayables.addAll(EventClient.getInstance().getEvents(weekStartTime, weekEndTime));
 		visibleDisplayables.addAll(CommitmentClient.getInstance().getCommitments(weekStartTime, weekEndTime));
 
 		Collections.sort(visibleDisplayables, new Comparator<Displayable>() {

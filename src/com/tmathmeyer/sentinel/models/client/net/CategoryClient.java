@@ -16,7 +16,7 @@ import java.util.UUID;
 import com.tmathmeyer.sentinel.models.data.Category;
 import com.tmathmeyer.sentinel.ui.main.MainPanel;
 
-public class CategoryClient extends NetworkCachingClient<Category, Category.SerializedAction>
+public class CategoryClient extends NetworkCachingClient<Category>
 {
 
 	private static CategoryClient instance;
@@ -26,7 +26,7 @@ public class CategoryClient extends NetworkCachingClient<Category, Category.Seri
 	 */
 	private CategoryClient()
 	{
-		super("categories", Category.SerializedAction[].class, Category[].class);
+		super(Category.class);
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class CategoryClient extends NetworkCachingClient<Category, Category.Seri
 	}
 
 	@Override
-	protected void applySerializedChange(Category.SerializedAction serializedAction)
+	protected void applySerializedChange(SerializedAction<Category> serializedAction)
 	{
 		if (serializedAction.isDeleted)
 		{
@@ -71,7 +71,7 @@ public class CategoryClient extends NetworkCachingClient<Category, Category.Seri
 		{
 			cache.put(serializedAction.uuid, serializedAction.object);
 		}
-		MainPanel.getInstance().refreshCategories(serializedAction);
+		MainPanel.getInstance().refreshCategories((com.tmathmeyer.sentinel.models.data.Category.SerializedAction) serializedAction);
 	}
 
 	@Override

@@ -20,7 +20,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import com.tmathmeyer.sentinel.models.client.local.EventClient;
+import com.tmathmeyer.sentinel.models.client.local.BlockingProviderSingleton;
 import com.tmathmeyer.sentinel.ui.janeway.container.JanewayTabModel;
 import com.tmathmeyer.sentinel.ui.janeway.container.TabPanel;
 import com.tmathmeyer.sentinel.ui.main.MainPanel;
@@ -74,7 +74,7 @@ public class Calendar extends JFrame implements WindowListener
 	@Override
     public void windowClosing(WindowEvent arg0)
     {
-		EventClient.getInstance().writeToFile(System.getProperty("user.home")+"/.sentinel-events");
+		BlockingProviderSingleton.getLocalProvider().flush();
     }
 
 	@Override

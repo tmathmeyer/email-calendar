@@ -183,4 +183,10 @@ public class Category implements Model
 			isDeleted = b;
 		}
 	}
+	
+	@Override
+	public NetworkCachingClient.SerializedAction<? extends Model> getSerializedAction(
+			boolean isDeleted) {
+		return new SerializedAction(this, this.getUuid(), isDeleted);
+	}
 }

@@ -11,6 +11,7 @@ package com.tmathmeyer.sentinel.models.client.net;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
@@ -18,7 +19,7 @@ import org.joda.time.DateTime;
 import com.tmathmeyer.sentinel.models.data.Commitment;
 import com.tmathmeyer.sentinel.ui.main.MainPanel;
 
-public class CommitmentClient extends CachingDisplayableClient<Commitment, Commitment.SerializedAction>
+public class CommitmentClient extends CachingDisplayableClient<Commitment>
 {
 	private static CommitmentClient instance;
 
@@ -27,7 +28,7 @@ public class CommitmentClient extends CachingDisplayableClient<Commitment, Commi
 	 */
 	protected CommitmentClient()
 	{
-		super("commitments", Commitment.SerializedAction[].class, Commitment[].class);
+		super(Commitment.class);
 	}
 
 	/**
@@ -59,7 +60,7 @@ public class CommitmentClient extends CachingDisplayableClient<Commitment, Commi
 	 * @param to the end time of the range
 	 * @return all commitments within this range
 	 */
-	public List<Commitment> getCommitments(DateTime from, DateTime to)
+	public Set<Commitment> getCommitments(DateTime from, DateTime to)
 	{
 		return getRange(from, to);
 	}
@@ -93,7 +94,7 @@ public class CommitmentClient extends CachingDisplayableClient<Commitment, Commi
 	 * @param id id of the category
 	 * @return all events with given category id
 	 */
-	public List<Commitment> getCommitmentsByCategory(UUID id)
+	public Set<Commitment> getCommitmentsByCategory(UUID id)
 	{
 		return getByCategory(id);
 	}

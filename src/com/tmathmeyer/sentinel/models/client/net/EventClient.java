@@ -1,6 +1,7 @@
 package com.tmathmeyer.sentinel.models.client.net;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
@@ -8,13 +9,13 @@ import org.joda.time.DateTime;
 import com.tmathmeyer.sentinel.models.data.Event;
 import com.tmathmeyer.sentinel.ui.main.MainPanel;
 
-public class EventClient extends CachingDisplayableClient<Event, Event.SerializedAction>
+public class EventClient extends CachingDisplayableClient<Event>
 {
 	private static EventClient instance;
 
 	protected EventClient()
 	{
-		super("events", Event.SerializedAction[].class, Event[].class);
+		super(Event.class);
 	}
 	
 	@Override
@@ -40,7 +41,7 @@ public class EventClient extends CachingDisplayableClient<Event, Event.Serialize
 	 * @param to
 	 * @return list of visible events
 	 */
-	public List<Event> getEvents(DateTime from, DateTime to)
+	public Set<Event> getEvents(DateTime from, DateTime to)
 	{
 		return getRange(from, to);
 	}
@@ -69,7 +70,7 @@ public class EventClient extends CachingDisplayableClient<Event, Event.Serialize
 	 * @param id id of the category
 	 * @return all events with given category id
 	 */
-	public List<Event> getEventsByCategory(UUID id)
+	public Set<Event> getEventsByCategory(UUID id)
 	{
 		return getByCategory(id);
 	}

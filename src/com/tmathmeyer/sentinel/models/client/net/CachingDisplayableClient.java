@@ -9,9 +9,9 @@
  ******************************************************************************/
 package com.tmathmeyer.sentinel.models.client.net;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
@@ -27,8 +27,8 @@ import com.tmathmeyer.sentinel.ui.main.MainPanel;
  * @param <T> Displayable item
  * @param <SA> SerializedAction to represent the changes pushed from the server
  */
-public abstract class CachingDisplayableClient<T extends Model & Displayable, SA extends NetworkCachingClient.SerializedAction<T>>
-        extends NetworkCachingClient<T, SA>
+public abstract class CachingDisplayableClient<T extends Model & Displayable>
+        extends NetworkCachingClient<T>
 {
 	/**
 	 * Creates new client
@@ -37,13 +37,13 @@ public abstract class CachingDisplayableClient<T extends Model & Displayable, SA
 	 * @param serializedActionClass the class object of the SA
 	 * @param singleClass the class object for T
 	 */
-	public CachingDisplayableClient(String urlname, Class<SA[]> serializedActionClass, Class<T[]> singleClass)
+	public CachingDisplayableClient(Class<T> singleClass)
 	{
-		super(urlname, serializedActionClass, singleClass);
+		super(singleClass);
 	}
 
 	@Override
-	protected void applySerializedChange(SA serializedAction)
+	protected void applySerializedChange(SerializedAction<T> serializedAction)
 	{
 
 		T obj = serializedAction.object;
@@ -92,11 +92,11 @@ public abstract class CachingDisplayableClient<T extends Model & Displayable, SA
 	 * @param to
 	 * @return list of visible events
 	 */
-	public List<T> getRange(DateTime from, DateTime to)
+	public Set<T> getRange(DateTime from, DateTime to)
 	{
 		validateCache();
 		// set up to filter events based on booleans in MainPanel
-		List<T> filteredEvents = new ArrayList<T>();
+		Set<T> filteredEvents = new HashSet<T>();
 		final Interval range = new Interval(from, to);
 
 		// loop through and add only if isProjectEvent() matches corresponding
@@ -117,11 +117,11 @@ public abstract class CachingDisplayableClient<T extends Model & Displayable, SA
 	 * @param categoryUUID the category's UUID to get
 	 * @return a list containing all events with that category
 	 */
-	protected List<T> getByCategory(UUID categoryUUID)
+	protected Set<T> getByCategory(UUID categoryUUID)
 	{
 		validateCache();
 
-		List<T> retrievedEvents = new ArrayList<>();
+		Set<T> retrievedEvents = new HashSet<>();
 
 		for (T e : cache.values())
 		{

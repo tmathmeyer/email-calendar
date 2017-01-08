@@ -18,7 +18,6 @@ import org.joda.time.Interval;
 import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 
-import com.tmathmeyer.sentinel.fs.RangeData;
 import com.tmathmeyer.sentinel.models.Model;
 import com.tmathmeyer.sentinel.models.client.net.NetworkCachingClient;
 import com.tmathmeyer.sentinel.models.client.net.CategoryClient;
@@ -31,9 +30,10 @@ import com.tmathmeyer.sentinel.utils.Months;
  * Commitment on a calendar.
  * 
  */
-public class Commitment implements Displayable, Model, RangeData<Commitment>
+public class Commitment implements Displayable, Model
 {
-    private static final long serialVersionUID = 7711318582487098682L;
+    @SuppressWarnings("unused")
+	private static final long serialVersionUID = 7711318582487098682L;
 	private UUID uuid = UUID.randomUUID();
 	private String name;
 	private String description;
@@ -44,18 +44,6 @@ public class Commitment implements Displayable, Model, RangeData<Commitment>
 	private Status status;
 	// Default status for new commitments.
 	public static final Status DEFAULT_STATUS = Status.NOT_STARTED;
-
-	@Override
-    public Commitment copyInternal(Commitment t)
-    {
-	    throw new RuntimeException("AHHHHHHH");
-    }
-	
-	@Override
-    public UUID getUUID()
-    {
-	    return uuid;
-    }
 	
 	/**
 	 * @param name the name of the event
@@ -400,22 +388,10 @@ public class Commitment implements Displayable, Model, RangeData<Commitment>
     {
 	    throw new IllegalArgumentException("can't do that");
     }
-
+	
 	@Override
-    public long getStartUnix()
-    {
-	    return duedate.getTime() / 1000l;
-    }
-
-	@Override
-    public long getEndUnix()
-    {
-	    return -1;
-    }
-
-	@Override
-    public int compareTo(RangeData<Commitment> o)
-    {
-	    return (int) (getStartUnix() - o.getStartUnix());
-    }
+	public NetworkCachingClient.SerializedAction<? extends Model> getSerializedAction(
+			boolean isDeleted) {
+		return new SerializedAction(this, this.getUuid(), isDeleted);
+	}
 }

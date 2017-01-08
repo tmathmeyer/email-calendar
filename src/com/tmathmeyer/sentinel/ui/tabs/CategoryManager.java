@@ -21,6 +21,7 @@ import java.awt.event.MouseListener;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.swing.BorderFactory;
@@ -42,9 +43,9 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import com.tmathmeyer.sentinel.models.client.local.EventClient;
 import com.tmathmeyer.sentinel.models.client.net.CategoryClient;
 import com.tmathmeyer.sentinel.models.client.net.CommitmentClient;
+import com.tmathmeyer.sentinel.models.client.net.EventClient;
 import com.tmathmeyer.sentinel.models.client.net.ICategoryRegister;
 import com.tmathmeyer.sentinel.models.data.Category;
 import com.tmathmeyer.sentinel.models.data.Category.SerializedAction;
@@ -343,7 +344,7 @@ public class CategoryManager extends JPanel implements ICategoryRegister
 	 */
 	private void changeEventOnDelete(UUID categoryID)
 	{
-		List<Event> affectedEvents = EventClient.getInstance().getEventsByCategory(categoryID);
+		Set<Event> affectedEvents = EventClient.getInstance().getEventsByCategory(categoryID);
 
 		for (Event e : affectedEvents)
 		{
@@ -360,7 +361,7 @@ public class CategoryManager extends JPanel implements ICategoryRegister
 	 */
 	private void changeCommitmentOnDelete(UUID categoryID)
 	{
-		List<Commitment> affectedCommitments = CommitmentClient.getInstance().getCommitmentsByCategory(categoryID);
+		Set<Commitment> affectedCommitments = CommitmentClient.getInstance().getCommitmentsByCategory(categoryID);
 
 		for (Commitment c : affectedCommitments)
 		{

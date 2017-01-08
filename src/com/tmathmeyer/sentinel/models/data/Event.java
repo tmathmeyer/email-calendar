@@ -18,10 +18,9 @@ import org.joda.time.Interval;
 import org.joda.time.MutableDateTime;
 import org.joda.time.format.DateTimeFormat;
 
-import com.tmathmeyer.sentinel.fs.RangeData;
 import com.tmathmeyer.sentinel.models.Model;
-import com.tmathmeyer.sentinel.models.client.local.EventClient;
 import com.tmathmeyer.sentinel.models.client.net.NetworkCachingClient;
+import com.tmathmeyer.sentinel.models.client.net.EventClient;
 import com.tmathmeyer.sentinel.models.client.net.CategoryClient;
 import com.tmathmeyer.sentinel.utils.Months;
 
@@ -30,9 +29,10 @@ import com.tmathmeyer.sentinel.utils.Months;
  * event on a calendar.
  * 
  */
-public class Event implements Model, Displayable, RangeData<Event>
+public class Event implements Model, Displayable
 {
-    private static final long serialVersionUID = 5687571978423959740L;
+    @SuppressWarnings("unused")
+	private static final long serialVersionUID = 5687571978423959740L;
 	private UUID uuid = UUID.randomUUID();
 	private String name;
 	private String description;
@@ -42,20 +42,6 @@ public class Event implements Model, Displayable, RangeData<Event>
 	private boolean isAllDay;
 	private UUID category;
 	private String participants;
-	
-	@Override
-    public Event copyInternal(Event t)
-    {
-	    name = t.name;
-	    description = t.description;
-	    start = t.start;
-	    end = t.end;
-	    isProjectEvent = t.isProjectEvent;
-	    isAllDay = t.isAllDay;
-	    category = t.category;
-	    participants = t.participants;
-		return this;
-    }
 
 	/**
 	 * 
@@ -416,7 +402,7 @@ public class Event implements Model, Displayable, RangeData<Event>
 	@Override
 	public void update()
 	{
-		EventClient.getInstance().update(this);
+		EventClient.getInstance().put(this);
 	}
 
 	@Override
@@ -464,35 +450,16 @@ public class Event implements Model, Displayable, RangeData<Event>
 			isDeleted = b;
 		}
 	}
-
-	@Override
-    public long getStartUnix()
-    {
-	    return start.getTime() / 1000l;
-    }
-
-	@Override
-    public long getEndUnix()
-    {
-		return end.getTime() / 1000l;
-    }
-
-	@Override
-    public int compareTo(RangeData<Event> o)
-    {
-		long sdif = getStartUnix() - o.getStartUnix();
-        if (sdif == 0)
-        {
-        	return (int) (getEndUnix() - o.getEndUnix());
-        }
-        return (int) sdif;
-    }
-
-	@Override
-    public UUID getUUID()
-    {
-	    return uuid;
-    }
-
 	
+	@Override
+	public int hashCode()
+	{
+		return getUuid().hashCode();
+	}
+
+	@Override
+	public NetworkCachingClient.SerializedAction<? extends Model> getSerializedAction(
+			boolean isDeleted) {
+		return new SerializedAction(this, this.getUuid(), isDeleted);
+	}
 }

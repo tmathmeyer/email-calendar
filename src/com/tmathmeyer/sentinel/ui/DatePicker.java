@@ -270,6 +270,7 @@ public class DatePicker extends JPanel implements MiniCalendarHostIface
 			this.cal = cal;
 			this.cal.setAlwaysOnTop(true);
 			this.miniCalendarInstance(true);
+			this.cal.setResizable(false);
 			this.cal.setVisible(true);
 		}
 	}

@@ -33,7 +33,7 @@ import org.joda.time.Interval;
 import org.joda.time.MutableDateTime;
 
 import com.tmathmeyer.sentinel.AbstractCalendar;
-import com.tmathmeyer.sentinel.models.client.local.EventClient;
+import com.tmathmeyer.sentinel.models.client.net.EventClient;
 import com.tmathmeyer.sentinel.models.data.Displayable;
 import com.tmathmeyer.sentinel.models.data.Event;
 import com.tmathmeyer.sentinel.ui.main.MainPanel;
@@ -362,7 +362,7 @@ public class YearCalendar extends AbstractCalendar
 		{
 			return;
 		}
-		Set<Event> events = this.eventModel.getWithinRange(from, to);
+		Set<Event> events = this.eventModel.getEvents(from, to);
 		for (Event e : events)
 		{
 			this.updateDisplayable(e, true);

@@ -31,7 +31,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import com.lowagie.text.Font;
 import com.tmathmeyer.sentinel.AbstractCalendar;
-import com.tmathmeyer.sentinel.models.client.local.EventClient;
+import com.tmathmeyer.sentinel.models.client.net.EventClient;
 import com.tmathmeyer.sentinel.models.client.net.CommitmentClient;
 import com.tmathmeyer.sentinel.models.data.Displayable;
 import com.tmathmeyer.sentinel.ui.main.MainPanel;
@@ -118,7 +118,7 @@ public class DayCalendar extends AbstractCalendar
 
 		// Return list of events to be displayed
 		List<Displayable> visibleDisplayables = new ArrayList<Displayable>();
-		visibleDisplayables.addAll(EventClient.getInstance().getWithinRange(from, to));
+		visibleDisplayables.addAll(EventClient.getInstance().getEvents(from, to));
 		visibleDisplayables.addAll(CommitmentClient.getInstance().getCommitments(from, to));
 
 		Collections.sort(visibleDisplayables, new Comparator<Displayable>() {

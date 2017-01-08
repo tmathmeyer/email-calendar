@@ -38,7 +38,7 @@ import org.joda.time.ReadableDateTime;
 
 import com.tmathmeyer.sentinel.AbstractCalendar;
 import com.tmathmeyer.sentinel.DayStyle;
-import com.tmathmeyer.sentinel.models.client.local.EventClient;
+import com.tmathmeyer.sentinel.models.client.net.EventClient;
 import com.tmathmeyer.sentinel.models.client.net.CommitmentClient;
 import com.tmathmeyer.sentinel.models.data.Displayable;
 import com.tmathmeyer.sentinel.ui.main.MainPanel;
@@ -412,7 +412,7 @@ public class MonthCalendar extends AbstractCalendar
 	private List<Displayable> getVisibleItems(DateTime from, DateTime to)
 	{
 		List<Displayable> visible = new ArrayList<>();
-		visible.addAll(EventClient.getInstance().getWithinRange(from, to));
+		visible.addAll(EventClient.getInstance().getEvents(from, to));
 		visible.addAll(CommitmentClient.getInstance().getCommitments(from, to));
 		return visible;
 	}

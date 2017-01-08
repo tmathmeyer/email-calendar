@@ -12,10 +12,12 @@ package com.tmathmeyer.sentinel.models.client.net;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import com.tmathmeyer.sentinel.CalendarLogger;
 import com.tmathmeyer.sentinel.models.Model;
+import com.tmathmeyer.sentinel.models.client.local.BlockingProviderSingleton;
 
 /**
  * CachingClient is a base class to enable long polling and caching on all
@@ -24,12 +26,12 @@ import com.tmathmeyer.sentinel.models.Model;
  * @param <T> Model type
  * @param <SA> SerializedAction type for restoring data
  */
-public abstract class NetworkCachingClient<T extends Model, SA extends NetworkCachingClient.SerializedAction<T>>
+public abstract class NetworkCachingClient<T extends Model>
 {
 	protected HashMap<UUID, T> cache = new HashMap<>();
 	protected boolean valid = false;
-	final private String urlname;
-	final private Class<T[]> singleClass;
+	final private Class<T> singleClass;
+	private final UUID sessionID;
 
 	/**
 	 * Build a new Caching client
@@ -38,10 +40,10 @@ public abstract class NetworkCachingClient<T extends Model, SA extends NetworkCa
 	 * @param serializedActionClass class instance of SA
 	 * @param singleClass class of T
 	 */
-	public NetworkCachingClient(final String urlname, final Class<SA[]> serializedActionClass, final Class<T[]> singleClass)
+	public NetworkCachingClient(final Class<T> singleClass)
 	{
-		this.urlname = urlname;
 		this.singleClass = singleClass;
+		this.sessionID = UUID.randomUUID();
 		Thread t = new Thread(new Runnable() {
 
 			@Override
@@ -51,12 +53,10 @@ public abstract class NetworkCachingClient<T extends Model, SA extends NetworkCa
 				{
 					try
 					{
-						List<SA> acts = ServerClient.get("Advanced/cal/" + urlname + "/poll", serializedActionClass);
-						for (SA serializedAction : acts)
+						for (SerializedAction<T> serializedAction : BlockingProviderSingleton.getLocalProvider().get(sessionID, singleClass))
 						{
 							applySerializedChange(serializedAction);
 						}
-						Thread.sleep(5000);
 					} catch (Exception ex)
 					{
 						invalidateCache();
@@ -81,7 +81,7 @@ public abstract class NetworkCachingClient<T extends Model, SA extends NetworkCa
 	 * 
 	 * @param serializedAction the change event
 	 */
-	protected abstract void applySerializedChange(SA serializedAction);
+	protected abstract void applySerializedChange(SerializedAction<T> serializedAction);
 
 	/**
 	 * Pulls a unique id from an object
@@ -156,7 +156,7 @@ public abstract class NetworkCachingClient<T extends Model, SA extends NetworkCa
 		if (valid)
 			return;
 		cache.clear();
-		List<T> all = ServerClient.get("cal/" + urlname, this.singleClass);
+		Set<T> all = BlockingProviderSingleton.getLocalProvider().getAll(sessionID, singleClass);
 		for (T event : all)
 		{
 			cache(event);
@@ -173,7 +173,7 @@ public abstract class NetworkCachingClient<T extends Model, SA extends NetworkCa
 	public boolean put(T toAdd)
 	{
 		cache(toAdd);
-		return ServerClient.put("cal/" + urlname, toAdd.toString());
+		return BlockingProviderSingleton.getLocalProvider().put(sessionID, toAdd);
 	}
 
 	/**
@@ -185,7 +185,7 @@ public abstract class NetworkCachingClient<T extends Model, SA extends NetworkCa
 	public boolean update(T toUpdate)
 	{
 		cache(toUpdate);
-		return ServerClient.post("cal/" + urlname, toUpdate.toString());
+		return BlockingProviderSingleton.getLocalProvider().post(sessionID, toUpdate);
 	}
 
 	/**
@@ -197,7 +197,7 @@ public abstract class NetworkCachingClient<T extends Model, SA extends NetworkCa
 	public boolean delete(T toRemove)
 	{
 		cache(toRemove);
-		return ServerClient.delete("cal/" + urlname, getUuidFrom(toRemove).toString());
+		return BlockingProviderSingleton.getLocalProvider().delete(sessionID, toRemove);
 	}
 
 	/**
@@ -208,5 +208,11 @@ public abstract class NetworkCachingClient<T extends Model, SA extends NetworkCa
 		public T object;
 		public UUID uuid;
 		public boolean isDeleted;
+		
+		@SuppressWarnings("unchecked")
+		public <X extends Model> X objectAsModel()
+		{
+			return (X) object;
+		}
 	}
 }

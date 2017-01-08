@@ -12,14 +12,8 @@
 
 package com.tmathmeyer.sentinel.models;
 
-/**
- * Model : The interface for all data models. Prototypes methods for model
- * handling and serializing.
- * 
- * @author twack
- * @author bgaffey
- *
- */
+import com.tmathmeyer.sentinel.models.client.net.NetworkCachingClient.SerializedAction;
+
 public interface Model
 {
 
@@ -48,4 +42,6 @@ public interface Model
 	 *         false
 	 */
 	public Boolean identify(Object o);
+	
+	public SerializedAction<? extends Model> getSerializedAction(boolean isDeleted);
 }

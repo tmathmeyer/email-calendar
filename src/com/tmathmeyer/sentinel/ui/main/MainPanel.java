@@ -42,9 +42,9 @@ import org.joda.time.DateTime;
 
 import com.tmathmeyer.sentinel.AbstractCalendar;
 import com.tmathmeyer.sentinel.CalendarLogger;
-import com.tmathmeyer.sentinel.models.client.local.EventClient;
 import com.tmathmeyer.sentinel.models.client.net.CategoryClient;
 import com.tmathmeyer.sentinel.models.client.net.CommitmentClient;
+import com.tmathmeyer.sentinel.models.client.net.EventClient;
 import com.tmathmeyer.sentinel.models.client.net.ICategoryRegister;
 import com.tmathmeyer.sentinel.models.data.Category;
 import com.tmathmeyer.sentinel.models.data.Commitment;
@@ -423,7 +423,7 @@ public class MainPanel extends JTabbedPane implements MiniCalendarHostIface
 	{
 		if ((currentSelected instanceof Event) && updateEvent.getUuid().equals(((Event) currentSelected).getUuid()))
 			clearSelected();
-		events.update(updateEvent);
+		events.put(updateEvent);
 	}
 
 	/**
